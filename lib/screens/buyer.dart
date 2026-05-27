@@ -11,18 +11,29 @@ class BuyerScreen extends StatefulWidget {
 }
 
 class _BuyerScreenState extends State<BuyerScreen> {
- 
   @override
-void initState() {
-  super.initState();
-  context.read<PropertyCubit>().fetchProperties();
-}@override
+  void initState() {
+    super.initState();
+    context.read<PropertyCubit>().fetchProperties();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text('Buyer Screen')),
-      body: Column(
+        
+      appBar: AppBar(
+        title: Text("Available Properties"),
+        automaticallyImplyLeading: false,
+      ),
+      body: 
+      Column(
+       
         children: [
-          Text('Click on property to see the full details'),
+          Text(
+            'Click on property to see the full details',
+            style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+          ),
+          SizedBox(height: 12),
           Expanded(
             child: BlocBuilder<PropertyCubit, PropertyState>(
               builder: (context, state) {
@@ -50,7 +61,8 @@ void initState() {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => PropertyDetailPage(property: property),
+                                builder: (context) =>
+                                    PropertyDetailPage(property: property),
                               ),
                             );
                           },

@@ -44,7 +44,12 @@ class _HomeState extends State<Home> {
             ListTile(
               leading: Icon(Icons.home),
               title: Text('Home'),
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => Home()),
+                );
+              },
             ),
             ListTile(
               leading: Icon(Icons.person),
@@ -76,13 +81,13 @@ class _HomeState extends State<Home> {
                 style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
               ),
             ),
-            SizedBox(height: 8),
+            SizedBox(height: 12),
             Text(
               'Find your perfect place or rent your property\nwith ease.',
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
             ),
-            SizedBox(height: 12),
+            SizedBox(height: 20),
 
             Row(
               mainAxisAlignment: MainAxisAlignment.center,

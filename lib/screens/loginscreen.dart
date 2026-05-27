@@ -54,10 +54,11 @@ void handlelogin() async {
     child: Padding(
       padding: const EdgeInsets.all(20),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
+        crossAxisAlignment: CrossAxisAlignment.center,
+      
         children: [
 
-          SizedBox(height: 30),
+          SizedBox(height: 80),
 
           // Header
           Text(

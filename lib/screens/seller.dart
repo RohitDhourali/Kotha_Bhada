@@ -51,6 +51,7 @@ class _SellerState extends State<Seller> {
 
       appBar: AppBar(
         title: Text("Add Property"),
+          automaticallyImplyLeading: false,
         centerTitle: true,
         elevation: 0,
       ),
@@ -66,7 +67,7 @@ class _SellerState extends State<Seller> {
             // Header
             Text(
               "List Your Property",
-              style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
             ),
 
             SizedBox(height: 25),

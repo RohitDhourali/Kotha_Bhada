@@ -69,7 +69,7 @@ class _MypropertiesState extends State<Myproperties> {
 
                                 // Delete Button
                                 SizedBox(
-                                  width: 80,
+                                  width: 90,
                                   child: CustomButton(
                                     text: 'Delete',
                                     style: TextStyle(
