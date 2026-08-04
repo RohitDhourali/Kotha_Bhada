@@ -3,6 +3,7 @@ import 'package:flutter_application_1/models/propertymodel.dart';
 import 'package:flutter_application_1/widgets/custom_button.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import '../cubit/bookingcubit.dart';
+
 class PropertyDetailPage extends StatelessWidget {
   final PropertyModel property;
 
@@ -11,7 +12,7 @@ class PropertyDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text(property.flatType)),
+      appBar: AppBar(title: Text('Property Details')),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
@@ -25,19 +26,19 @@ class PropertyDetailPage extends StatelessWidget {
             Text("Description: ${property.description}"),
             SizedBox(height: 16),
             BlocBuilder<BookingCubit, Text>(
-  builder: (context, bookingText) {
-    return CustomButton(
-      text: bookingText.data ?? "Book Now",
-      onPressed: () {
-        context.read<BookingCubit>().book();
+              builder: (context, bookingText) {
+                return CustomButton(
+                  text: bookingText.data ?? "Book Now",
+                  onPressed: () {
+                    context.read<BookingCubit>().book();
 
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(content: Text("Booked Successfully!")),
-              );
-            },
-    );
-  },
-)
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text("Booked Successfully!")),
+                    );
+                  },
+                );
+              },
+            ),
           ],
         ),
       ),

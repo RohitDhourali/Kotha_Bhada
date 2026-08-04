@@ -8,17 +8,17 @@ class PropertyService {
 
   // SAVE PROPERTY
   // SAVE — takes RequestModel, no confusion
-  Future<String> saveProperty(PropertyRequestModel property) async {
-    try {
-      final uid = FirebaseAuth.instance.currentUser!.uid;
-      final ref = await _firestore
-          .collection("properties")
-          .add(property.toMap(uid)); // userId injected here
-      await ref.update({"id": ref.id});
-      return "Property saved successfully";
-    } catch (e) {
-      return "$e";
+  Future<void> saveProperty(PropertyRequestModel property) async {
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      throw Exception('User must be logged in to save a property.');
     }
+
+    final docRef = _firestore.collection('properties').doc();
+    final propertyMap = property.toMap(user.uid);
+    propertyMap['id'] = docRef.id;
+
+    await docRef.set(propertyMap);
   }
 
   // DELETE — takes id from PropertyModel
@@ -27,17 +27,21 @@ class PropertyService {
   }
 
   Future<List<PropertyModel>> fetchProperties() async {
-    final snapshot = await _firestore.collection("properties").get();
+    final snapshot = await _firestore.collection('properties').get();
 
     return snapshot.docs.map((doc) => PropertyModel.fromDocument(doc)).toList();
   }
 
   // FETCH — returns PropertyModel list
   Future<List<PropertyModel>> fetchMyProperties() async {
-    final uid = FirebaseAuth.instance.currentUser!.uid;
+    final user = FirebaseAuth.instance.currentUser;
+    if (user == null) {
+      throw Exception('User must be logged in to fetch your properties.');
+    }
+
     final snapshot = await _firestore
-        .collection("properties")
-        .where("userId", isEqualTo: uid)
+        .collection('properties')
+        .where('userId', isEqualTo: user.uid)
         .get();
     return snapshot.docs.map((doc) => PropertyModel.fromDocument(doc)).toList();
   }

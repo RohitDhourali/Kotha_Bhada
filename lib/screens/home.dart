@@ -5,167 +5,252 @@ import 'profile.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
+
   @override
-  State<StatefulWidget> createState() => _HomeState();
+  State<Home> createState() => _HomeState();
 }
 
 class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        leading: Padding(
-          padding: const EdgeInsets.all(8),
-          child: ClipOval(
-            child: Image.asset(
-              "lib/images/2.png",
-              width: 140,
-              height: 140,
-              fit: BoxFit.cover,
-            ),
-          ),
-        ),
-        title: Text(
-          'KothaBhada',
-          style: TextStyle(fontWeight: FontWeight.bold),
-        ),
-      ),
-      endDrawer: Drawer(
-        child: ListView(
-          padding: EdgeInsets.zero,
-          children: [
-            const DrawerHeader(
-              decoration: BoxDecoration(color: Colors.blue),
-              child: Text(
-                'Menu',
-                style: TextStyle(color: Colors.white, fontSize: 24),
+    return PopScope(
+      canPop: false,
+      onPopInvoked: (didPop) async {
+        if (didPop) return;
+
+        bool? exitApp = await showDialog<bool>(
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+              title: const Text('Exit App'),
+              content: const Text('Are you sure you want to exit?'),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context, false),
+                  child: const Text('No'),
+                ),
+                TextButton(
+                  onPressed: () => Navigator.pop(context, true),
+                  child: const Text('Yes'),
+                ),
+              ],
+            );
+          },
+        );
+
+        if (exitApp == true) {
+          Navigator.pop(context);
+        }
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          leading: Padding(
+            padding: const EdgeInsets.all(8),
+            child: ClipOval(
+              child: Image.asset(
+                'lib/images/2.png',
+                width: 46,
+                height: 46,
+                fit: BoxFit.cover,
               ),
             ),
-            ListTile(
-              leading: Icon(Icons.home),
-              title: Text('Home'),
-              onTap: () {
+          ),
+          title: const Text('KothaBhada'),
+          actions: [
+            IconButton(
+              icon: const Icon(Icons.person_outline),
+              onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (_) => Home()),
+                  MaterialPageRoute(builder: (_) => const ProfileScreen()),
                 );
               },
-            ),
-            ListTile(
-              leading: Icon(Icons.person),
-              title: Text('Profile'),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (_) => ProfileScreen()),
-                );
-              },
-            ),
-            ListTile(
-              leading: Icon(Icons.settings),
-              title: Text('Settings'),
-              onTap: () {},
+            )
+          ],
+        ),
+        endDrawer: Drawer(
+          child: ListView(
+            padding: EdgeInsets.zero,
+            children: [
+              DrawerHeader(
+                decoration: BoxDecoration(color: Theme.of(context).primaryColor),
+                child: const Text(
+                  'KothaBhada Menu',
+                  style: TextStyle(color: Colors.white, fontSize: 22),
+                ),
+              ),
+              ListTile(
+                leading: const Icon(Icons.home),
+                title: const Text('Home'),
+                onTap: () => Navigator.pop(context),
+              ),
+              ListTile(
+                leading: const Icon(Icons.person),
+                title: const Text('Profile'),
+                onTap: () {
+                  Navigator.pop(context);
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (_) => const ProfileScreen()),
+                  );
+                },
+              ),
+              ListTile(
+                leading: const Icon(Icons.settings),
+                title: const Text('Settings'),
+                onTap: () {},
+              ),
+            ],
+          ),
+        ),
+        body: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Hello, welcome!',
+                style: Theme.of(context).textTheme.titleLarge,
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Rent or list your next property with confidence.',
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+              const SizedBox(height: 22),
+              Container(
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(22),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black12,
+                      blurRadius: 18,
+                      offset: const Offset(0, 8),
+                    ),
+                  ],
+                ),
+                padding: const EdgeInsets.all(20),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Get started',
+                      style: TextStyle(fontSize: 20, fontWeight: FontWeight.w700),
+                    ),
+                    const SizedBox(height: 12),
+                    const Text(
+                      'Choose what you want to do today and quickly move to the right section.',
+                    ),
+                  ],
+                ),
+              ),
+              const SizedBox(height: 24),
+              GridView.count(
+                crossAxisCount: 2,
+                childAspectRatio: 0.88,
+                crossAxisSpacing: 14,
+                mainAxisSpacing: 14,
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                children: [
+                  _buildActionCard(
+                    context,
+                    icon: Icons.home,
+                    title: 'Rent Home',
+                    subtitle: 'Browse available listings',
+                    color: const Color(0xFF1E88E5),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => BuyerScreen()),
+                      );
+                    },
+                  ),
+                  _buildActionCard(
+                    context,
+                    icon: Icons.add_business,
+                    title: 'List Property',
+                    subtitle: 'Add a new rental listing',
+                    color: const Color(0xFF43A047),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (_) => const Seller()),
+                      );
+                    },
+                  ),
+                  _buildActionCard(
+                    context,
+                    icon: Icons.favorite_border,
+                    title: 'Favorites',
+                    subtitle: 'Save interesting listings',
+                    color: const Color(0xFF8E24AA),
+                    onTap: () {},
+                  ),
+                  _buildActionCard(
+                    context,
+                    icon: Icons.message_outlined,
+                    title: 'Messages',
+                    subtitle: 'Chat with property owners',
+                    color: const Color(0xFFFB8C00),
+                    onTap: () {},
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildActionCard(
+    BuildContext context, {
+    required IconData icon,
+    required String title,
+    required String subtitle,
+    required Color color,
+    required VoidCallback onTap,
+  }) {
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(18),
+      child: Container(
+        decoration: BoxDecoration(
+          color: color,
+          borderRadius: BorderRadius.circular(18),
+          boxShadow: [
+            BoxShadow(
+              color: color.withOpacity(0.28),
+              blurRadius: 16,
+              offset: const Offset(0, 8),
             ),
           ],
         ),
-      ),
-      body: Center(
+        padding: const EdgeInsets.all(18),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Padding(
-              padding: EdgeInsets.all(8),
-              child: Text(
-                'Welcome!',
-                textAlign: TextAlign.center,
-                style: TextStyle(fontSize: 22, fontWeight: FontWeight.bold),
+            CircleAvatar(
+              radius: 24,
+              backgroundColor: Colors.white.withOpacity(0.2),
+              child: Icon(icon, color: Colors.white, size: 28),
+            ),
+            const SizedBox(height: 22),
+            Text(
+              title,
+              style: const TextStyle(
+                color: Colors.white,
+                fontSize: 18,
+                fontWeight: FontWeight.w700,
               ),
             ),
-            SizedBox(height: 12),
+            const Spacer(),
             Text(
-              'Find your perfect place or rent your property\nwith ease.',
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 20),
-
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SizedBox(
-                  height: 280,
-                  width: 180,
-                  child: Card(
-                    color: const Color.fromARGB(255, 20, 145, 248),
-                    elevation: 4,
-                    child: InkWell(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (_) => BuyerScreen()),
-                        );
-                      },
-                      child: Column(
-                        children: [
-                          Padding(padding: EdgeInsets.all(5)),
-                          Icon(Icons.home, size: 60),
-                          SizedBox(height: 5),
-                          Text(
-                            '  Rent a\nproperty',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                              fontSize: 20,
-                            ),
-                          ),
-                          SizedBox(height: 10),
-                          Text(
-                            'Discover homes,\n   apartments,\n     and more',
-                            style: TextStyle(color: Colors.white, fontSize: 14),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(width: 10),
-                SizedBox(
-                  height: 280,
-                  width: 180,
-                  child: Card(
-                    color: Colors.green,
-                    elevation: 4,
-                    child: InkWell(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(builder: (_) => Seller()),
-                        );
-                      },
-                      child: Column(
-                        children: [
-                          Padding(padding: EdgeInsets.all(5)),
-                          Icon(Icons.key, size: 60),
-                          SizedBox(height: 5),
-                          Text(
-                            'List your\nproperty',
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              color: Colors.white,
-                              fontSize: 20,
-                            ),
-                          ),
-                          SizedBox(height: 10),
-                          Text(
-                            'Earn income by,\nrenting out your,\n       space',
-                            style: TextStyle(color: Colors.white, fontSize: 14),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ],
+              subtitle,
+              style: const TextStyle(color: Colors.white70),
             ),
           ],
         ),

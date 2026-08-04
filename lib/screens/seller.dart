@@ -1,13 +1,9 @@
-
-
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/cubit/property_details_cubit.dart';
 import 'package:flutter_application_1/widgets/custom_button.dart';
 import 'myproperties.dart';
-import 'package:flutter_application_1/models/propertymodel.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_application_1/services/property_services.dart';
 import 'package:flutter_application_1/models/propertyrequestmodel.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class Seller extends StatefulWidget {
   const Seller({super.key});
@@ -24,7 +20,6 @@ class _SellerState extends State<Seller> {
   final TextEditingController _ownerNameController = TextEditingController();
   final TextEditingController _ownerContactController = TextEditingController();
 
-
   void save() async {
     final property = PropertyRequestModel(
       flatType: _flatTypeController.text,
@@ -33,171 +28,166 @@ class _SellerState extends State<Seller> {
       description: _descriptionController.text,
       ownername: _ownerNameController.text,
       ownercontact: _ownerContactController.text,
-    
-    
     );
-    await context.read<PropertyCubit>().saveProperty(
-      property
-    );
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text("Property saved successfully"), backgroundColor: Colors.green),
-    );
-   
+
+    try {
+      await context.read<PropertyCubit>().saveProperty(property);
+      _flatTypeController.clear();
+      _rentController.clear();
+      _addressController.clear();
+      _descriptionController.clear();
+      _ownerNameController.clear();
+      _ownerContactController.clear();
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Property saved successfully'),
+          backgroundColor: Colors.green,
+        ),
+      );
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text('Failed to save property: $e'),
+          backgroundColor: Colors.red,
+        ),
+      );
+    }
   }
+
+  @override
+  void dispose() {
+    _flatTypeController.dispose();
+    _rentController.dispose();
+    _addressController.dispose();
+    _descriptionController.dispose();
+    _ownerNameController.dispose();
+    _ownerContactController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[100],
-
       appBar: AppBar(
-        title: Text("Add Property"),
-          automaticallyImplyLeading: false,
+        title: const Text('List Your Property'),
         centerTitle: true,
         elevation: 0,
       ),
-
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            
-           
-
-            // Header
             Text(
-              "List Your Property",
-              style: TextStyle(fontSize: 20, fontWeight: FontWeight.w500),
+              'Share your space with ease.',
+              style: Theme.of(context).textTheme.bodyLarge,
             ),
-
-            SizedBox(height: 25),
-
-            // Form Card
+            const SizedBox(height: 20),
             Container(
-              padding: EdgeInsets.all(18),
+              padding: const EdgeInsets.all(24),
               decoration: BoxDecoration(
                 color: Colors.white,
-                borderRadius: BorderRadius.circular(16),
+                borderRadius: BorderRadius.circular(24),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.black12,
-                    blurRadius: 10,
-                    offset: Offset(0, 5),
+                    blurRadius: 18,
+                    offset: const Offset(0, 10),
                   ),
                 ],
               ),
-
               child: Column(
                 children: [
-                  // Flat Type
-                  TextField(
+                  _buildTextField(
                     controller: _flatTypeController,
-                    decoration: InputDecoration(
-                      labelText: "Flat Type",
-                      prefixIcon: Icon(Icons.apartment),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
+                    label: 'Flat Type',
+                    icon: Icons.apartment_outlined,
                   ),
-
-                  SizedBox(height: 15),
-
-                  // Rent
-                  TextField(
+                  const SizedBox(height: 18),
+                  _buildTextField(
                     controller: _rentController,
+                    label: 'Rent',
+                    icon: Icons.currency_rupee,
                     keyboardType: TextInputType.number,
-                    decoration: InputDecoration(
-                      labelText: "Rent",
-                      prefixIcon: Icon(Icons.currency_rupee),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
                   ),
-
-                  SizedBox(height: 15),
-
-                  // Address
-                  TextField(
+                  const SizedBox(height: 18),
+                  _buildTextField(
                     controller: _addressController,
-                    decoration: InputDecoration(
-                      labelText: "Address",
-                      prefixIcon: Icon(Icons.location_on),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
+                    label: 'Address',
+                    icon: Icons.location_on_outlined,
                   ),
-
-                  SizedBox(height: 15),
-
-                  // Description
+                  const SizedBox(height: 18),
                   TextField(
                     controller: _descriptionController,
-                    maxLines: 3,
+                    maxLines: 4,
                     decoration: InputDecoration(
-                      labelText: "Description",
+                      labelText: 'Description',
+                      prefixIcon: const Padding(
+                        padding: EdgeInsets.only(bottom: 42),
+                        child: Icon(Icons.description_outlined),
+                      ),
                       alignLabelWithHint: true,
-                      prefixIcon: Padding(
-                        padding: EdgeInsets.only(bottom: 50),
-                        child: Icon(Icons.description),
-                      ),
                       border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
+                        borderRadius: BorderRadius.circular(16),
+                        borderSide: BorderSide.none,
                       ),
+                      filled: true,
+                      fillColor: Colors.grey[100],
                     ),
                   ),
-
-                  SizedBox(height: 15),
-
-                  // Owner Name
-                  TextField(
+                  const SizedBox(height: 18),
+                  _buildTextField(
                     controller: _ownerNameController,
-                    decoration: InputDecoration(
-                      labelText: "Owner Name",
-                      prefixIcon: Icon(Icons.person),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
+                    label: 'Owner Name',
+                    icon: Icons.person_outline,
                   ),
-
-                  SizedBox(height: 15),
-
-                  // Owner Contact
-                  TextField(
+                  const SizedBox(height: 18),
+                  _buildTextField(
                     controller: _ownerContactController,
+                    label: 'Owner Contact',
+                    icon: Icons.phone_outlined,
                     keyboardType: TextInputType.phone,
-                    decoration: InputDecoration(
-                      labelText: "Owner Contact",
-                      prefixIcon: Icon(Icons.phone),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                    ),
                   ),
                 ],
               ),
             ),
-
-            SizedBox(height: 30),
-
-            // Submit Button
+            const SizedBox(height: 24),
             CustomButton(text: 'Submit Property', onPressed: save),
-
-            SizedBox(height: 20),
+            const SizedBox(height: 16),
             CustomButton(
               text: 'See your properties',
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => Myproperties()),
+                  MaterialPageRoute(builder: (context) => const Myproperties()),
                 );
               },
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildTextField({
+    required TextEditingController controller,
+    required String label,
+    required IconData icon,
+    TextInputType keyboardType = TextInputType.text,
+  }) {
+    return TextField(
+      controller: controller,
+      keyboardType: keyboardType,
+      decoration: InputDecoration(
+        labelText: label,
+        prefixIcon: Icon(icon),
+        border: OutlineInputBorder(
+          borderRadius: BorderRadius.circular(16),
+          borderSide: BorderSide.none,
+        ),
+        filled: true,
+        fillColor: Colors.grey[100],
       ),
     );
   }

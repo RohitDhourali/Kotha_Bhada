@@ -1,4 +1,3 @@
-import 'package:flutter_application_1/models/propertymodel.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_application_1/repository/property_repository.dart';
 import 'property_state.dart';
@@ -11,12 +10,11 @@ class PropertyCubit extends Cubit<PropertyState> {
   Future<void> saveProperty(PropertyRequestModel property) async {
     try {
       emit(PropertyLoading());
-
       await repository.saveProperty(property);
-
-      emit(PropertyLoaded([])); // Emit loaded state to refresh UI
+      emit(PropertyLoaded([]));
     } catch (e) {
       emit(PropertyError(e.toString()));
+      rethrow;
     }
   }
 

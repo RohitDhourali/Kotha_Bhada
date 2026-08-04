@@ -5,7 +5,7 @@ import 'package:flutter_application_1/models/propertyrequestmodel.dart';
 class PropertyRepository {
   final PropertyService _service = PropertyService();
 
-  Future<String> saveProperty(PropertyRequestModel property) async {
+  Future<void> saveProperty(PropertyRequestModel property) async {
     return await _service.saveProperty(property);
   }
 

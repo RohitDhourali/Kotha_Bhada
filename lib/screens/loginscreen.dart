@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
 import '../controller/auth_controller.dart';
 import '../widgets/custom_button.dart';
-import 'seller.dart';
-import 'home.dart';
-import 'myproperties.dart';
 class LoginScreen extends StatefulWidget {
   LoginScreen({super.key});
 
@@ -17,24 +14,21 @@ class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController passwordController = TextEditingController();
 
   final AuthController authController = AuthController();
-void handlelogin() async {
+
+  void handlelogin() async {
     final result = await authController.loginUser(
       emailController.text,
       passwordController.text,
     );
 
-    if (result == "1") {
+    if (result == '1') {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text("Login Successful"),
+        const SnackBar(
+          content: Text('Login Successful'),
           backgroundColor: Colors.green,
         ),
       );
-
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => Home()),
-      );
+      Navigator.pushReplacementNamed(context, '/home');
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -44,91 +38,98 @@ void handlelogin() async {
       );
     }
   }
+
+  bool visible = false;
+  void togglePasswordVisibility() {
+    setState(() {
+      visible = !visible; // Toggle the visibility stateq
+       // Toggle the visibility state
+    });
+      // This will trigger a rebuild to update the UI
+    
+  }
   @override
   Widget build(BuildContext context) {
-   return Scaffold(
-  backgroundColor: Colors.grey[100],
+    return Scaffold(
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
 
-  
-  body: SingleChildScrollView(
-    child: Padding(
-      padding: const EdgeInsets.all(20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-      
-        children: [
-
-          SizedBox(height: 80),
-
-          // Header
-          Text(
-            "Login",
-            style: TextStyle(
-              fontSize: 28,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-
-         
-
-          SizedBox(height: 30),
+              const SizedBox(height: 12),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    'Welcome Back',
+                    style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
+                  ),
+                  IconButton(
+                    onPressed: () {},
+                    icon: const Icon(Icons.info_outline),
+                    color: Theme.of(context).primaryColor,
+                  ),
+                ],
+              ),
+              const SizedBox(height: 8),
+              Text(
+                'Log in to manage rentals, chat with owners, and discover new listings.',
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+              const SizedBox(height: 32),
 
           // Card container
-          Container(
-            padding: EdgeInsets.all(16),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(16),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black12,
-                  blurRadius: 10,
-                  offset: Offset(0, 5),
-                ),
-              ],
-            ),
-            child: Column(
-              children: [
-
-                // Email
-                TextField(
-                  controller: emailController,
-                  decoration: InputDecoration(
-                    labelText: "Email",
-                    prefixIcon: Icon(Icons.email),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
+              Container(
+                padding: const EdgeInsets.all(24),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(20),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black12,
+                      blurRadius: 18,
+                      offset: const Offset(0, 7),
                     ),
-                  ),
+                  ],
                 ),
-
-                SizedBox(height: 15),
-
-                // Password
-                TextField(
-                  controller: passwordController,
-                  obscureText: true,
-                  decoration: InputDecoration(
-                    labelText: "Password",
-                    prefixIcon: Icon(Icons.lock),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(12),
+                child: Column(
+                  children: [
+                    TextField(
+                      controller: emailController,
+                      keyboardType: TextInputType.emailAddress,
+                      decoration: const InputDecoration(
+                        labelText: 'Email',
+                        prefixIcon: Icon(Icons.email_outlined),
+                      ),
                     ),
-                  ),
+                    const SizedBox(height: 18),
+                    TextField(
+                      controller: passwordController,
+                      obscureText: !visible,
+                      decoration: InputDecoration(
+                        labelText: 'Password',
+                        prefixIcon: const Icon(Icons.lock_outline),
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            visible ? Icons.visibility : Icons.visibility_off,
+                          ),
+                          onPressed: togglePasswordVisibility,
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-          ),
+              ),
 
           SizedBox(height: 25),
 
           // Login button
-          SizedBox(
-            height: 50,
-            child:CustomButton(text: "Login", onPressed: handlelogin)
-          ),
+              const SizedBox(height: 25),
+              CustomButton(text: 'Login', onPressed: handlelogin),
 
-          SizedBox(height: 15),
+          SizedBox(height: 10),
 
           // Forgot password
           TextButton(
@@ -137,27 +138,29 @@ void handlelogin() async {
                 
              
           
-            child: Text("Forgot Password?"),
+            child: Text("Forgot Password?",style: TextStyle(
+              color: Colors.blue,
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+            ),),
           ),
 
-          SizedBox(height: 10),
+          SizedBox(height: 8),
 
           // Signup redirect
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              Text("Don't have an account? "),
+              Text("Don't have an account? ",style: TextStyle(
+                color: Colors.black,
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),),
               TextButton(
                 onPressed: () {
-                  Navigator.pop(context);
+                  Navigator.pushNamed(context, '/signup');
                 },
-                child: Text(
-                  "Sign Up",
-                  style: TextStyle(
-                    color: Colors.blue,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
+                child: const Text('Sign Up'),
               ),
             ],
           ),

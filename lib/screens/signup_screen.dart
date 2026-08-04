@@ -1,11 +1,10 @@
-// ui/signup_screen.dart
-
 import 'package:flutter/material.dart';
 import '../controller/auth_controller.dart';
-import 'loginscreen.dart';
 import '../widgets/custom_button.dart';
 
 class SignupScreen extends StatefulWidget {
+  const SignupScreen({super.key});
+
   @override
   _SignupScreenState createState() => _SignupScreenState();
 }
@@ -14,8 +13,8 @@ class _SignupScreenState extends State<SignupScreen> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   final usernameController = TextEditingController();
-
   final AuthController _authController = AuthController();
+  bool visible = false;
 
   void handleSignup() async {
     final result = await _authController.signUp(
@@ -23,17 +22,14 @@ class _SignupScreenState extends State<SignupScreen> {
       passwordController.text,
       usernameController.text,
     );
-    if (result == "1") {
+    if (result == '1') {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text("Signup Successful"),
+        const SnackBar(
+          content: Text('Signup Successful'),
           backgroundColor: Colors.green,
         ),
       );
-      Navigator.push(
-        context,
-        MaterialPageRoute(builder: (context) => LoginScreen()),
-      );
+      Navigator.pushReplacementNamed(context, '/login');
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text(result), backgroundColor: Colors.red),
@@ -41,112 +37,96 @@ class _SignupScreenState extends State<SignupScreen> {
     }
   }
 
+  void togglePasswordVisibility() {
+    setState(() {
+      visible = !visible;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[100],
-
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(20),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 32),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: 80),
-
-              // Header
-              Text(
-                "Create Account",
-                style: TextStyle(fontSize: 28, fontWeight: FontWeight.bold),
+              const SizedBox(height: 12),
+              const Text(
+                'Create Account',
+                style: TextStyle(fontSize: 30, fontWeight: FontWeight.bold),
               ),
-
-              SizedBox(height: 30),
-
-              // Card container
+              const SizedBox(height: 10),
+              Text(
+                'Join KothaBhada and start listing or renting properties in minutes.',
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+              const SizedBox(height: 30),
               Container(
-                padding: EdgeInsets.all(16),
+                padding: const EdgeInsets.all(24),
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(16),
+                  borderRadius: BorderRadius.circular(20),
                   boxShadow: [
                     BoxShadow(
                       color: Colors.black12,
-                      blurRadius: 10,
-                      offset: Offset(0, 5),
+                      blurRadius: 18,
+                      offset: const Offset(0, 7),
                     ),
                   ],
                 ),
                 child: Column(
                   children: [
-                    // Username
                     TextField(
                       controller: usernameController,
-                      decoration: InputDecoration(
-                        labelText: "Username",
-                        prefixIcon: Icon(Icons.person),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
+                      decoration: const InputDecoration(
+                        labelText: 'Username',
+                        prefixIcon: Icon(Icons.person_outline),
                       ),
                     ),
-
-                    SizedBox(height: 15),
-
-                    // Email
+                    const SizedBox(height: 18),
                     TextField(
                       controller: emailController,
-                      decoration: InputDecoration(
-                        labelText: "Email",
-                        prefixIcon: Icon(Icons.email),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
+                      keyboardType: TextInputType.emailAddress,
+                      decoration: const InputDecoration(
+                        labelText: 'Email',
+                        prefixIcon: Icon(Icons.email_outlined),
                       ),
                     ),
-
-                    SizedBox(height: 15),
-
-                    // Password
+                    const SizedBox(height: 18),
                     TextField(
                       controller: passwordController,
-                      obscureText: true,
+                      obscureText: !visible,
                       decoration: InputDecoration(
-                        labelText: "Password",
-                        prefixIcon: Icon(Icons.lock),
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
+                        labelText: 'Password',
+                        prefixIcon: const Icon(Icons.lock_outline),
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            visible ? Icons.visibility : Icons.visibility_off,
+                          ),
+                          onPressed: togglePasswordVisibility,
                         ),
                       ),
                     ),
                   ],
                 ),
               ),
-
-              SizedBox(height: 25),
-
-              CustomButton(text: "Create Account", onPressed: handleSignup),
-
-              SizedBox(height: 20),
-
-              // Login redirect
+              const SizedBox(height: 25),
+              CustomButton(text: 'Create Account', onPressed: handleSignup),
+              const SizedBox(height: 20),
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  Text("Already have an account? "),
+                  Text(
+                    'Already have an account? ',
+                    style: Theme.of(context).textTheme.bodyLarge,
+                  ),
                   TextButton(
                     onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (context) => LoginScreen()),
-                      );
+                      Navigator.pushNamed(context, '/login');
                     },
-                    child: Text(
-                      "Login",
-                      style: TextStyle(
-                        color: Colors.blue,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
+                    child: const Text('Login'),
                   ),
                 ],
               ),
